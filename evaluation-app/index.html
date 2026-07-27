@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>溯流项目评估系统</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- 飞书 JSSDK -->
+  <script type="text/javascript" src="https://lf-scm-cn.feishu.cn/lark/op/h5-js-sdk-1.5.48.js"></script>
+</head>
+<body>
+  <!-- 顶部导航栏 -->
+  <header class="app-header">
+    <div class="header-left" id="headerBack" style="display:none;">
+      <span class="back-icon">←</span>
+    </div>
+    <div class="header-title" id="headerTitle">项目评估</div>
+    <div class="header-right" id="headerUser">
+      <div class="user-avatar" id="userAvatar"></div>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="app-main">
+    <!-- 页面1: 项目列表 -->
+    <section id="page-projects" class="page active">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="搜索项目名称/编号..." class="search-input">
+        <button class="search-btn" onclick="searchProjects()">搜索</button>
+      </div>
+
+      <div class="filter-tabs">
+        <span class="filter-tab active" data-status="" onclick="filterByStatus(this, '')">全部</span>
+        <span class="filter-tab" data-status="跟进中" onclick="filterByStatus(this, '跟进中')">跟进中</span>
+        <span class="filter-tab" data-status="投标中" onclick="filterByStatus(this, '投标中')">投标中</span>
+        <span class="filter-tab" data-status="已中标" onclick="filterByStatus(this, '已中标')">已中标</span>
+      </div>
+
+      <div class="project-list" id="projectList">
+        <div class="loading">加载中...</div>
+      </div>
+
+      <div class="load-more" id="loadMore" style="display:none;">
+        <button onclick="loadMoreProjects()">加载更多</button>
+      </div>
+    </section>
+
+    <!-- 页面2: 项目详情 + 评估入口 -->
+    <section id="page-project-detail" class="page">
+      <div class="project-detail" id="projectDetail">
+        <div class="loading">加载中...</div>
+      </div>
+
+      <div class="section-title">
+        <span>历史评估记录</span>
+        <button class="btn-primary btn-sm" onclick="goToQuestionnaire()">+ 新建评估</button>
+      </div>
+      <div class="evaluation-list" id="evaluationList">
+        <div class="empty-tip">暂无评估记录</div>
+      </div>
+    </section>
+
+    <!-- 页面3: 评估问卷 -->
+    <section id="page-questionnaire" class="page">
+      <div class="questionnaire-header">
+        <h3 id="questionnaireTitle">项目全维度评估问卷</h3>
+        <p id="questionnaireDesc" class="questionnaire-desc">请根据项目实际情况，对以下各维度进行评分</p>
+      </div>
+
+      <form id="questionnaireForm">
+        <div id="questionnaireContent"></div>
+
+        <div class="warning-section">
+          <h4>⚠️ 风险预警标记</h4>
+          <div class="warning-options">
+            <label class="warning-item">
+              <input type="checkbox" name="决策人变更预警" value="true">
+              <span>决策人变更预警</span>
+            </label>
+            <label class="warning-item">
+              <input type="checkbox" name="明确需要垫资预警" value="true">
+              <span>明确需要垫资预警</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="submit-section">
+          <button type="button" class="btn-secondary" onclick="showScorePreview()">预览得分</button>
+          <button type="submit" class="btn-primary">提交评估</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 页面4: 评估报告 -->
+    <section id="page-report" class="page">
+      <div class="report-container" id="reportContainer">
+        <div class="loading">加载中...</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 得分预览弹窗 -->
+  <div class="modal" id="scoreModal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>得分预览</h3>
+        <span class="modal-close" onclick="closeScoreModal()">×</span>
+      </div>
+      <div class="modal-body" id="scoreModalBody"></div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeScoreModal()">继续修改</button>
+        <button class="btn-primary" onclick="submitEvaluation()">确认提交</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast 提示 -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
